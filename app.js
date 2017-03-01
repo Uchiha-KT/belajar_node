@@ -1,17 +1,21 @@
 var http   = require("http");
 var url    = require("url");
 var routes = require("routes")();
+var view   = require("swig");
 
 routes.addRoute('/', function(req, res){
-  res.writeHead(200,{"Content-Type" : "text/plain"});
-  res.end("This is index page");
+  var html = view.compileFile('template/index.html')({
+    title : "Home"
+  });
+  res.writeHead(200,{"Content-Type" : "text/html"});
+  res.end(html);
 });
 
 routes.addRoute('/profile/:nama?', function(req, res){
   res.writeHead(200,{"Content-Type" : "text/plain"});
   if (this.params.nama != "undefined") {
 
-  res.end("Profile Pagenya: "+this.params.nama);
+    res.end("Profile Pagenya: "+this.params.nama);
   }
 });
 
@@ -22,7 +26,7 @@ http.createServer(function(req, res){
     match.fn(req, res);
   }
   else{
-    res.writeHead(200,{"Content-Type" : "text/plain"});
+    res.writeHead(404,{"Content-Type" : "text/plain"});
     res.end("Error 404");
   }
-}).listen(8080);
+}).listen(80);
